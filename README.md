@@ -60,7 +60,7 @@ Pour installer Packer il suffit de suivre les etapes de la documentation officie
 
 Dans notre cas nous sommes sur un serveur linux:
 
-![Installation de Packer](images/install_packer1.png)
+![Installation de Packer](images/install_paccker1.png)
 
 Une fois l'installation terminée , nous allons vérifier qu'il est bien présent:
 
@@ -187,7 +187,7 @@ packer build docker.pkr.hcl
 
 Une fois le build terminée, nous avons une images de disponible sur aws:
 
-![packer](images/packer-images.png)
+![packer](images/packer-ami.png)
 
 #### Provisionnement de l'infrastructure
 
