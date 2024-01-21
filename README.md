@@ -249,7 +249,9 @@ Comme vous pouvez le voir plus ci-dessous notre site web a bien été déployée
 Comme vous pouvez le constater il est tout a fait possible de realiser un deploiement sur n'importe quelle infrastructure a notre disposition
 il suffit juste de savoir au préalable quel est le process de façon manuelle et puis de l'adapter dans un script d'automatisation.
 
-
+------------
 Ulrich NOUMSI
+
 Ing Cloud & DevOps
-LinkeInd ![My profile](https://www.linkedin.com/in/ulrich-steve-noumsi/)
+
+LinkeInd : https://www.linkedin.com/in/ulrich-steve-noumsi/
