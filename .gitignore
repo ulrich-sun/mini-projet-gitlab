@@ -1,0 +1,20 @@
+.terraform*
+terraform.tfstate*
+# Vagrant file
+.vagrant
+# fichiers temporaires de la gamme office
+~*
+# répertoire partargé avec les VMs
+shared
+infra/terraform/.terraform
+# ssh keypairs
+#*.pem
+# executables files
+*.exe
+# terraform file
+*.tfstate
+*.tfstate.backup
+*.lock.hcl
+
+# some cache by githubaction
+*.cache

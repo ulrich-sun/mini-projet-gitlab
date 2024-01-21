@@ -1,0 +1,58 @@
+image: docker:latest
+services:
+  - name: docker:dind
+    alias: docker
+
+stages:
+  - build
+  - test
+  - publish
+  - deploy
+
+variables:
+  SERVER_USER: ubuntu
+  SERVER_IP: 54.161.122.212
+
+build:
+  stage: build
+  script: 
+    - docker build -t mini-projet-gitlab .
+    - docker save mini-projet-gitlab > mini-projet-gitlab.tar
+  artifacts:
+    paths:
+      - mini-projet-gitlab.tar 
+
+test:
+  stage: test
+  script:
+    - docker load < mini-projet-gitlab.tar
+    - docker run --rm -d -p 80:80 --name website mini-projet-gitlab
+    - sleep 5
+    - apk --no-cache add curl
+    - curl -I "http://docker"
+
+publish:
+  stage: publish
+  script:
+    - docker load < mini-projet-gitlab.tar
+    - docker tag mini-projet-gitlab "${IMAGE_NAME}:${CI_COMMIT_REF_NAME}"
+    - docker tag mini-projet-gitlab "${IMAGE_NAME}:${CI_COMMIT_SHORT_SHA}"
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - docker push "${IMAGE_NAME}:${CI_COMMIT_REF_NAME}"
+    - docker push "${IMAGE_NAME}:${CI_COMMIT_SHORT_SHA}"
+
+deploy:
+  image: alpine:latest
+  stage: deploy
+  script:
+    - chmod og= $ID_RSA
+    - apk update && apk add openssh-client
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker pull ${IMAGE_NAME}:${CI_COMMIT_REF_NAME}"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker container rm -f my-app || true"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker run --rm -d -p 80:80 --name my-app ${IMAGE_NAME}:${CI_COMMIT_REF_NAME}"
+  environment:
+    name: test
+    url: http://$SERVER_IP
+  only:
+    - master
